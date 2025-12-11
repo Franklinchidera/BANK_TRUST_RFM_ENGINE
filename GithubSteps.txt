@@ -19,3 +19,15 @@ git remote add origin https://github.com/Franklinchidera/BANK_TRUST_RFM_ENGINE.g
 #8 Rename branch and push 
 git branch -M main 
 git push -u origin main 
+
+#9 Check which file changes were made 
+git status 
+
+#10 Add all new changes 
+git add . 
+
+#11 Commit the changes 
+git commit -m "Add new feature: New changes" 
+
+#12 Push to Github
+git push origin main 

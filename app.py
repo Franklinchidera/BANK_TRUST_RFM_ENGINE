@@ -4,7 +4,7 @@ import numpy as np
 from data_processor import fetch_data, preprocess_data, calculate_rfm_metrics
 from rfm_analyzer import calculate_rfm_scores, prepare_rfm_data_for_clustering
 from clustering_engine import apply_clustering, assign_cluster_names
-from visualization import generate_cluster_profiles, plot_segmentation_distribution, plot_avg_values_by_segment
+from visualization import generate_cluster_profiles, plot_segmentation_distribution, plot_avg_rfm_values_by_segment, segment_size_comparison, plot_segment_revenue_percentage 
 import openai
 from dotenv import load_dotenv
 load_dotenv(override=True)
@@ -55,9 +55,10 @@ def main():
         col1, col2 = st.columns(2)
         with col1: 
             st.pyplot(plot_segmentation_distribution(clustered_data))
-            st.pyplot(plot_avg_values_by_segment(cluster_profile))
+            st.pyplot(plot_avg_rfm_values_by_segment(cluster_profile))
         with col2:
-            st.pyplot(plot_avg_values_by_segment(cluster_profile))
+            st.pyplot(segment_size_comparison(cluster_profile))
+            st.pyplot(plot_segment_revenue_percentage(clustered_data))
 
     with tab2:
         def get_segmented_customers(rfm_df): 
@@ -86,13 +87,13 @@ def main():
         prompt = f"""
         Based on this RFM cluster profile data: {cluster_profile.to_dict()}
 
-        Give recommendations for marketing strategies to target each customer segment effectively.
+        Give recommendations for marketing strategies to target each customer segment effectively in British Pounds.
         Provide specific strategies for at least three different customer segments.
         """
 
         client = openai.OpenAI(
             api_key=os.getenv("api_key"), 
-            base_url="https://api.grog.com/openai/v1"
+            base_url="https://api.groq.com/openai/v1"
         )
         response = client.responses.create(
             model = "openai/gpt-oss-120b", 

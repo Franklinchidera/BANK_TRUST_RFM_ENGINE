@@ -32,7 +32,7 @@ def find_optimal_clusters(rfm_scaled_df):
         'best_silhouette_score': max(silhouette_scores)
     }
 
-def apply_clustering(rfm_scaled_df, rfm_data, optimal_k=None):
+def apply_clustering(rfm_scaled_df, rfm_data, optimal_k=4):
     """Apply KMeans Clustering cleanly without global variables"""
 
     if optimal_k is None:
@@ -43,6 +43,7 @@ def apply_clustering(rfm_scaled_df, rfm_data, optimal_k=None):
     rfm_data = rfm_data.copy()
     rfm_data['Cluster'] = kmeans.fit_predict(rfm_scaled_df)
 
+    print(rfm_data.head())
 
     ### Converting RFM Scores to INTs
 
@@ -67,9 +68,9 @@ def apply_clustering(rfm_scaled_df, rfm_data, optimal_k=None):
                             'Customer_Count', 'Avg_Account_Balance',
                             'Gender_Mode']
     
-    return rfm_data, cluster_analysis, optimal_k 
+    return cluster_analysis, rfm_data, optimal_k 
 
-def assign_cluster_name (stats): 
+def assign_cluster_name(stats): 
     """Assign Descriptive Names to Clusters based on RFM Statistics"""    
     recency = stats['Avg_Recency']
     frequency = stats['Avg_Frequency']
@@ -98,11 +99,9 @@ def assign_cluster_name (stats):
         return "Regular Customers"
 
 
-def assign_cluster_names(rfm_data, cluster_analysis): 
-    rfm_df = rfm_data.copy()
-
-    print(rfm_data.columns.tolist())
-
+def assign_cluster_names(rfm_df, cluster_analysis): 
+    rfm_df = rfm_df.copy()
+    print(rfm_df.head())
     rfm_df['Cluster_Name'] = rfm_df['Cluster'].map(lambda x: assign_cluster_name(cluster_analysis.loc[x]))
     
     return rfm_df 
